@@ -1,0 +1,18 @@
+# Build manual de referencia (no forma parte del pipeline automático de GitHub Actions,
+# que es el que se usa normalmente — ver documentacion/despliegue-guia).
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - build
+      - --build-arg
+      - NEXT_PUBLIC_API_URL=$_API_URL
+      - -t
+      - us-central1-docker.pkg.dev/notification-system-603aa/vark/vark-frontend:latest
+      - .
+
+images:
+  - us-central1-docker.pkg.dev/notification-system-603aa/vark/vark-frontend:latest
+
+# Valor por defecto — sobreescribir con la URL real del backend al ejecutar el comando
+substitutions:
+  _API_URL: 'https://REEMPLAZA-CON-URL-REAL-DEL-BACKEND/api'
