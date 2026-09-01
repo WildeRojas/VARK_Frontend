@@ -428,7 +428,12 @@ export default function RecursosPage() {
       })
       .catch(() => {});
     listarRecursos()
-      .then((data) => { if (mounted) setRecursos(data.map(mapRecursoAPI)); })
+      .then((data) => {
+        if (mounted) {
+          const list = Array.isArray(data) ? data : ((data as any)?.results || []);
+          if (list.length > 0) setRecursos(list.map(mapRecursoAPI));
+        }
+      })
       .catch(() => {});
     return () => { mounted = false; };
   }, []);

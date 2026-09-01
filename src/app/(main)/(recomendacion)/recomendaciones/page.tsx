@@ -862,6 +862,8 @@ function RecursoCard({
       layout
       variants={cardV}
       whileHover={{ y: -4, boxShadow: `var(--shadow-card)` }}
+      onMouseEnter={() => onHover(r)}
+      onMouseLeave={() => onHover(null)}
       onHoverStart={() => onHover(r)}
       onHoverEnd={() => onHover(null)}
       style={{
@@ -1055,7 +1057,8 @@ export default function RecomendacionesPage() {
         if (recs.length > 0) {
           setRecursos(recs.map(toRecurso));
         }
-        const v = { v: perfil.puntaje_visual, a: perfil.puntaje_auditivo, r: perfil.puntaje_lectura, k: perfil.puntaje_kinestesico };
+        const norm = (n: number) => (n > 0 && n <= 1) ? Math.round(n * 100) : Math.round(n ?? 0);
+        const v = { v: norm(perfil.puntaje_visual), a: norm(perfil.puntaje_auditivo), r: norm(perfil.puntaje_lectura), k: norm(perfil.puntaje_kinestesico) };
         setPerfilVark(v);
         const dom = perfil.estilo_dominante;
         setEstiloDom(dom);
@@ -1347,7 +1350,7 @@ export default function RecomendacionesPage() {
           <motion.aside
             key="panel"
             initial={{ width: 0, opacity: 0 }}
-            animate={{ width: 288, opacity: 1 }}
+            animate={{ width: 320, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] as [number,number,number,number] }}
             style={{
@@ -1359,7 +1362,7 @@ export default function RecomendacionesPage() {
           >
             <div
               style={{
-                width: 288, flex: 1, overflowY: 'auto',
+                width: 320, flex: 1, overflowY: 'auto',
                 padding: '24px 20px',
                 display: 'flex', flexDirection: 'column', gap: 24,
               }}

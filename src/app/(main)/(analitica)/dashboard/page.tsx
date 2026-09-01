@@ -184,10 +184,10 @@ export default function DashboardPage() {
         if (!mounted) return;
         const pv = d.perfil_vark;
         setProfile({
-          v: Math.round((pv.V ?? 0) * 100),
-          a: Math.round((pv.A ?? 0) * 100),
-          r: Math.round((pv.R ?? 0) * 100),
-          k: Math.round((pv.K ?? 0) * 100),
+          v: (pv.V > 0 && pv.V <= 1) ? Math.round(pv.V * 100) : Math.round(pv.V ?? 0),
+          a: (pv.A > 0 && pv.A <= 1) ? Math.round(pv.A * 100) : Math.round(pv.A ?? 0),
+          r: (pv.R > 0 && pv.R <= 1) ? Math.round(pv.R * 100) : Math.round(pv.R ?? 0),
+          k: (pv.K > 0 && pv.K <= 1) ? Math.round(pv.K * 100) : Math.round(pv.K ?? 0),
         });
         setKpis((prev) => prev.map((kpi) => {
           if (kpi.label === 'Recursos completados') return { ...kpi, value: d.total_recursos_vistos, trend: 0 };
