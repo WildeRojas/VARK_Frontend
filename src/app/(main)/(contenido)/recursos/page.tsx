@@ -290,8 +290,8 @@ const containerVariants = {
 };
 
 const cardVariants = {
-  hidden:  { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.32, ease: [0.4, 0, 0.2, 1] as [number,number,number,number] } },
+  hidden:  { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.28 } },
 };
 
 // ─── Empty state ──────────────────────────────────────────────────────────────
@@ -873,20 +873,32 @@ interface CardProps {
 }
 
 function RecursoCard({ recurso: r, temaLabel, hovered, onHover, onLeave, onEdit, onDelete, readOnly = false }: CardProps) {
-  const ytThumb = r.tipo === 'video' ? getYoutubeThumbnail(r.url) : null;
+  const [imgError, setImgError] = useState(false);
+  const ytThumb = (!imgError && (r.tipo === 'video' || (r.url && (r.url.includes('youtube.com') || r.url.includes('youtu.be')))))
+    ? getYoutubeThumbnail(r.url)
+    : null;
+
+  const tipoColor = TIPO_COLOR[r.tipo] || 'var(--accent-blue)';
+  const tipoIcon = TIPO_ICON[r.tipo] || <FileText size={18} />;
+  const varkBadge = VARK_BADGE[r.vark] || 'vark-v';
+  const varkLabel = VARK_LABEL[r.vark] || r.vark;
+  const estadoBadge = ESTADO_BADGE[r.estado] || 'success';
 
   return (
     <motion.div
+      layout
       variants={cardVariants}
-      onMouseEnter={onHover}
-      onMouseLeave={onLeave}
-      animate={hovered
-        ? { scale: 1.025, boxShadow: '0 0 24px rgba(59,110,248,0.22)' }
-        : { scale: 1,     boxShadow: 'none' }
-      }
-      transition={{ duration: 0.22 }}
-      className="glass-card"
-      style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+      whileHover={{ y: -4, scale: 1.015, boxShadow: 'var(--shadow-card), 0 0 24px rgba(59,110,248,0.18)' }}
+      style={{
+        borderRadius: 'var(--radius-lg)',
+        border: '1px solid var(--border-glass)',
+        background: 'var(--bg-card)',
+        backdropFilter: 'blur(20px)',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        transition: 'border-color 0.2s, box-shadow 0.2s',
+      }}
     >
       {/* Thumbnail / tipo header */}
       <div
@@ -906,7 +918,7 @@ function RecursoCard({ recurso: r, temaLabel, hovered, onHover, onLeave, onEdit,
           <img
             src={ytThumb}
             alt=""
-            onError={(e) => { e.currentTarget.style.display = "none"; }}
+            onError={() => setImgError(true)}
             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
           />
         ) : (
