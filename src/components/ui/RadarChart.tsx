@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import {
   Radar,
   RadarChart as RechartsRadar,
@@ -35,6 +36,11 @@ function normalizeScore(val: number | undefined): number {
 }
 
 export default function RadarChart({ data, size = 280 }: RadarChartProps) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const chartData = [
     { subject: 'Visual',      value: normalizeScore(data?.v), fill: VARK_COLORS.v },
     { subject: 'Auditivo',    value: normalizeScore(data?.a), fill: VARK_COLORS.a },
@@ -42,9 +48,13 @@ export default function RadarChart({ data, size = 280 }: RadarChartProps) {
     { subject: 'Kinestésico', value: normalizeScore(data?.k), fill: VARK_COLORS.k },
   ];
 
+  if (!mounted) {
+    return <div style={{ width: size, height: size, margin: '0 auto' }} />;
+  }
+
   return (
-    <div style={{ width: size, height: size, margin: '0 auto', position: 'relative' }}>
-      <ResponsiveContainer width="100%" height="100%">
+    <div style={{ width: size, height: size, minWidth: size, minHeight: size, margin: '0 auto', position: 'relative' }}>
+      <ResponsiveContainer width={size} height={size} minWidth={size} minHeight={size}>
         <RechartsRadar
           data={chartData}
           cx="50%"

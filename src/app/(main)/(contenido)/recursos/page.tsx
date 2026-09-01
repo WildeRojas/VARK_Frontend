@@ -235,17 +235,27 @@ const DIF_TO_NIVEL_API: Record<number, NivelComplejidad> = {
   1: 'basico', 2: 'intermedio', 3: 'avanzado',
 };
 
-function mapRecursoAPI(r: RecursoAPI): Recurso {
+function mapRecursoAPI(r: any): Recurso {
+  const tipoRaw = String(r.tipo_formato || r.tipo || 'documento').toLowerCase();
+  const tipo: TipoRecurso = TIPO_API_TO_UI[tipoRaw as TipoFormato] || 'documento';
+  const varkRaw = String(r.categoria_vark || r.vark || 'V').toUpperCase() as EstiloVark;
+  const vark: EstiloVark = (['V', 'A', 'R', 'K'].includes(varkRaw)) ? varkRaw : 'V';
+  const estado: EstadoRec = r.activo !== false ? 'Aprobado' : 'Rechazado';
+  const difRaw = r.nivel_complejidad || r.dificultad;
+  const dificultad: 1 | 2 | 3 = (typeof difRaw === 'number' && (difRaw === 1 || difRaw === 2 || difRaw === 3))
+    ? (difRaw as 1 | 2 | 3)
+    : (NIVEL_API_TO_DIF[difRaw as NivelComplejidad] || 1);
+
   return {
-    id: String(r.id),
-    titulo: r.titulo,
-    url: r.url ?? '',
-    descripcion: r.descripcion ?? '',
-    tema: String(r.tema),
-    tipo: TIPO_API_TO_UI[r.tipo_formato] ?? 'documento',
-    vark: r.categoria_vark,
-    dificultad: NIVEL_API_TO_DIF[r.nivel_complejidad] ?? 1,
-    estado: r.activo ? 'Aprobado' : 'Rechazado',
+    id: String(r.id || Math.random()),
+    titulo: String(r.titulo || 'Sin título'),
+    url: String(r.url || ''),
+    descripcion: String(r.descripcion || ''),
+    tema: r.tema_nombre ? String(r.tema_nombre) : (r.tema ? String(r.tema) : ''),
+    tipo,
+    vark,
+    dificultad,
+    estado,
   };
 }
 
@@ -423,7 +433,8 @@ export default function RecursosPage() {
     listarTemas()
       .then((temas) => {
         if (mounted && temas.length) {
-          setTemaOpts(temas.map((t) => ({ value: String(t.id), label: t.nombre })));
+          const validTemas = temas.filter((t: any) => t && t.id && t.nombre);
+          if (validTemas.length) setTemaOpts(validTemas.map((t: any) => ({ value: t.nombre, label: t.nombre })));
         }
       })
       .catch(() => {});
@@ -895,6 +906,7 @@ function RecursoCard({ recurso: r, temaLabel, hovered, onHover, onLeave, onEdit,
           <img
             src={ytThumb}
             alt=""
+            onError={(e) => { e.currentTarget.style.display = "none"; }}
             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
           />
         ) : (
