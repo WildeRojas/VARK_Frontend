@@ -2,7 +2,8 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 interface ModalProps {
   open: boolean;
@@ -13,6 +14,12 @@ interface ModalProps {
 }
 
 export default function Modal({ open, onClose, title, children, maxWidth = 580 }: ModalProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
@@ -24,10 +31,12 @@ export default function Modal({ open, onClose, title, children, maxWidth = 580 }
     };
   }, [open]);
 
-  return (
+  if (!mounted || typeof document === 'undefined' || !document.body) return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && (
-        <>
+        <div style={{ position: 'relative', zIndex: 9999 }}>
           {/* Backdrop */}
           <motion.div
             key="modal-backdrop"
@@ -39,10 +48,10 @@ export default function Modal({ open, onClose, title, children, maxWidth = 580 }
             style={{
               position: 'fixed',
               inset: 0,
-              background: 'rgba(2, 6, 23, 0.78)',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
-              zIndex: 100,
+              background: 'rgba(2, 6, 23, 0.82)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              zIndex: 9998,
             }}
           />
 
@@ -54,21 +63,21 @@ export default function Modal({ open, onClose, title, children, maxWidth = 580 }
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: '16px',
-              zIndex: 101,
+              padding: '24px 16px',
+              zIndex: 9999,
               pointerEvents: 'none',
             }}
           >
             <motion.div
               key="modal-panel"
-              initial={{ opacity: 0, scale: 0.95, y: 14 }}
+              initial={{ opacity: 0, scale: 0.95, y: 16 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 14 }}
+              exit={{ opacity: 0, scale: 0.95, y: 16 }}
               transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] }}
               style={{
                 width: '100%',
                 maxWidth,
-                maxHeight: 'min(90vh, 780px)',
+                maxHeight: 'calc(100vh - 48px)',
                 pointerEvents: 'all',
                 display: 'flex',
                 flexDirection: 'column',
@@ -80,13 +89,13 @@ export default function Modal({ open, onClose, title, children, maxWidth = 580 }
                   padding: 0,
                   display: 'flex',
                   flexDirection: 'column',
-                  maxHeight: 'min(90vh, 780px)',
+                  maxHeight: 'calc(100vh - 48px)',
                   borderRadius: 'var(--radius-xl, 24px)',
                   border: '1px solid var(--border-glass)',
-                  background: 'var(--bg-card, rgba(10, 20, 55, 0.92))',
-                  backdropFilter: 'blur(24px)',
-                  WebkitBackdropFilter: 'blur(24px)',
-                  boxShadow: '0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06)',
+                  background: 'var(--bg-card, rgba(10, 20, 55, 0.96))',
+                  backdropFilter: 'blur(28px)',
+                  WebkitBackdropFilter: 'blur(28px)',
+                  boxShadow: '0 28px 72px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.08)',
                   overflow: 'hidden',
                 }}
               >
@@ -153,8 +162,9 @@ export default function Modal({ open, onClose, title, children, maxWidth = 580 }
               </div>
             </motion.div>
           </div>
-        </>
+        </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

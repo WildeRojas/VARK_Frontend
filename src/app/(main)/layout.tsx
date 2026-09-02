@@ -47,7 +47,6 @@ function Shell({ children }: { children: React.ReactNode }) {
       <main
         style={{
           position: 'relative',
-          zIndex: 1,
           marginLeft: currentSidebarWidth,
           marginTop: 'var(--topbar-height)',
           padding: '24px 28px',
