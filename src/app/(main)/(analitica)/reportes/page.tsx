@@ -632,7 +632,7 @@ export default function ReportesPage() {
             <span style={{ color: 'var(--accent-blue)' }}>grupo</span>
           </h1>
           <p style={{ margin: '5px 0 0', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-            CU-19 · Seguimiento docente — distribución VARK y progreso individual
+            Seguimiento docente — distribución VARK y progreso individual
           </p>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
@@ -662,7 +662,7 @@ export default function ReportesPage() {
         transition={{ duration: 0.3, delay: 0.08 }}
         style={{ ...CARD, padding: '16px 20px', marginBottom: 22 }}
       >
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: 14, alignItems: 'end' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, alignItems: 'end' }}>
           <Select
             label="Curso"
             options={[

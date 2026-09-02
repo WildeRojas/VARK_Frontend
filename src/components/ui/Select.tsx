@@ -56,7 +56,7 @@ export default function Select({
   };
 
   return (
-    <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
+    <div ref={containerRef} style={{ position: 'relative', width: '100%', zIndex: open ? 80 : 1 }}>
       {/* Trigger */}
       <div
         onClick={() => setOpen((v) => !v)}
@@ -140,12 +140,12 @@ export default function Select({
               top: 'calc(100% + 6px)',
               left: 0,
               right: 0,
-              background: 'rgba(8,16,45,0.97)',
+              background: 'rgba(10,20,55,0.98)',
               backdropFilter: 'blur(16px)',
               border: '1px solid var(--border-glass)',
               borderRadius: 'var(--radius-md)',
               boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-              zIndex: 50,
+              zIndex: 90,
               overflow: 'hidden',
               maxHeight: 220,
               overflowY: 'auto',

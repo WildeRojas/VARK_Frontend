@@ -386,7 +386,7 @@ export default function HistorialPage() {
             <span style={{ color: 'var(--accent-blue)' }}>perfil VARK</span>
           </h1>
           <p style={{ margin: '5px 0 0', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-            CU-18 · Historial de cambios en el vector [V, A, R, K]
+            Historial de cambios en el vector [V, A, R, K]
           </p>
         </div>
 

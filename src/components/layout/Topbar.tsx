@@ -12,6 +12,8 @@ import Button from '@/components/ui/Button';
 import { listarNotificaciones, marcarNotificacionLeida, marcarTodasLeidas } from '@/lib/api/analitica';
 import type { NotificacionAPI } from '@/lib/api/types';
 import { useAuth, type Rol } from '@/lib/auth/AuthContext';
+import { useSidebar } from '@/components/layout/SidebarContext';
+import { Menu } from 'lucide-react';
 import { useTheme } from '@/lib/theme/ThemeContext';
 
 const ROL_LABEL: Record<Rol, string> = {
@@ -178,6 +180,7 @@ export default function Topbar() {
   const [hoveredId, setHovered] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const loadedRef               = useRef(false);
+  const { isCollapsed, isMobile, toggleMobile } = useSidebar();
 
   const iniciales = user
     ? (user.nombre?.[0] ?? '') + (user.apellido?.[0] ?? '')
@@ -240,7 +243,7 @@ export default function Topbar() {
         style={{
           position: 'fixed',
           top: 0,
-          left: 'var(--sidebar-width)',
+          left: isMobile ? '0px' : isCollapsed ? 'var(--sidebar-collapsed-width, 72px)' : 'var(--sidebar-width, 240px)',
           right: 0,
           height: 'var(--topbar-height)',
           background: 'var(--bg-topbar)',
@@ -249,12 +252,38 @@ export default function Topbar() {
           borderBottom: '1px solid var(--border-glass)',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'flex-end',
-          padding: '0 24px',
+          justifyContent: 'space-between',
+          padding: '0 20px',
           gap: 10,
           zIndex: 30,
+          transition: 'left 0.28s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
       >
+        {/* Left mobile menu toggle */}
+        {isMobile ? (
+          <motion.button
+            onClick={toggleMobile}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.92 }}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 8,
+              background: 'var(--bg-glass)',
+              border: '1px solid var(--border-glass)',
+              color: 'var(--text-primary)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+            }}
+          >
+            <Menu size={18} />
+          </motion.button>
+        ) : <div />}
+
+        {/* Right tools */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         {/* Theme toggle (claro/oscuro) */}
         <motion.button
           onClick={toggleTheme}
@@ -422,6 +451,7 @@ export default function Topbar() {
               </>
             )}
           </AnimatePresence>
+        </div>
         </div>
       </motion.header>
 

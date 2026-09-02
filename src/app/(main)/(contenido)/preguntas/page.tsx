@@ -1288,7 +1288,7 @@ export default function PreguntasPage() {
       <Modal open={iaOpen} onClose={() => setIaOpen(false)} title="Generar preguntas con IA" maxWidth={720}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
           {/* Controles */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 110px auto', gap: 12, alignItems: 'flex-end' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, alignItems: 'flex-end' }}>
             <Select label="Tema" options={temaOpts} value={iaTema} onChange={setIaTema} />
             <Select label="Dificultad" options={DIFICULTADES_IA} value={iaDificultad} onChange={setIaDificultad} />
             <Input id="ia-cantidad" label="Cantidad" type="number"
@@ -1313,7 +1313,7 @@ export default function PreguntasPage() {
           )}
 
           {/* Candidatas */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxHeight: '46vh', overflowY: 'auto' }}>
+          <div className="modal-scrollbar" style={{ display: 'flex', flexDirection: 'column', gap: 14, maxHeight: '52vh', overflowY: 'auto', paddingRight: 4 }}>
             {iaCandidatas.map((c, idx) => (
               <motion.div key={idx} layout initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                 style={{ padding: '16px 18px', borderRadius: 'var(--radius-md)', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)' }}>

@@ -309,7 +309,7 @@ export default function ExperimentoPage() {
               <span style={{ color: 'var(--accent-blue)' }}>A/B</span>
             </h1>
             <p style={{ margin: '3px 0 0', fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-              CU-20 · Personalización adaptativa — RF13
+              Personalización adaptativa — RF13
             </p>
           </div>
           <Badge variant={statusBadge} size="md" style={{ marginLeft: 8 }}>

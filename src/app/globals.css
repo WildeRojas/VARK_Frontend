@@ -36,7 +36,8 @@
   --info:           #00d4ff;
 
   /* Layout */
-  --sidebar-width:  220px;
+  --sidebar-width: 240px;
+  --sidebar-collapsed-width: 72px;
   --topbar-height:  70px;
 
   /* Radios */
@@ -146,4 +147,43 @@ body {
     box-shadow: var(--shadow-card),
                 inset 0 1px 0 var(--glass-highlight);
   }
+}
+
+
+/* ─── Sleek Custom Glass Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 110, 248, 0.5);
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+}
+
+/* ─── Modern Glass Form Controls ─── */
+.glass-input-focus:focus-within {
+  border-color: var(--accent-blue) !important;
+  box-shadow: 0 0 0 3px rgba(59, 110, 248, 0.2) !important;
+}
+
+.modal-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.modal-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(59, 110, 248, 0.25);
+  border-radius: 999px;
+}
+.modal-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 110, 248, 0.6);
 }

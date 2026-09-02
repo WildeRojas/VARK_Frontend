@@ -755,7 +755,7 @@ export default function ConfiguracionPage() {
               <Info size={14} style={{ flexShrink: 0, marginTop: 1 }} />
               <span>
                 La asignación de grupos es aleatoria y persiste durante toda la duración del experimento.
-                Los resultados se comparan en el módulo de Reportes (CU-20).
+                Los resultados se comparan en el módulo de Reportes .
               </span>
             </div>
           </div>

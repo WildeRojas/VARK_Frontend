@@ -188,7 +188,7 @@ export default function PerfilDinamicoPage() {
               <span style={{ color: 'var(--accent-blue)' }}>Perfil Dinámico</span>
             </h1>
             <p style={{ margin: '4px 0 0', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-              CU-16 · Actualización dinámica del vector [V, A, R, K] con decaimiento temporal
+              Actualización dinámica del vector [V, A, R, K] con decaimiento temporal
             </p>
           </div>
 

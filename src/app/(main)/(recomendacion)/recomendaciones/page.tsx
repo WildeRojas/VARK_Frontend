@@ -549,11 +549,12 @@ function FeedbackPanel({ rec, onClose }: { rec: Recurso; onClose: () => void }) 
       exit={{ opacity: 0 }}
       transition={{ duration: 0.22 }}
       style={{
-        position: 'fixed', inset: 0, zIndex: 60,
-        display: 'flex', alignItems: 'flex-end',
-        background: 'var(--overlay)',
-        backdropFilter: 'blur(6px)',
-        paddingLeft: 'var(--sidebar-width, 220px)',
+        position: 'fixed', inset: 0, zIndex: 100,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: 'rgba(2, 6, 23, 0.78)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+        padding: '16px',
       }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
@@ -563,11 +564,14 @@ function FeedbackPanel({ rec, onClose }: { rec: Recurso; onClose: () => void }) 
         exit={{ y: 80, opacity: 0 }}
         transition={{ duration: 0.32, ease: [0.4, 0, 0.2, 1] as [number,number,number,number] }}
         style={{
-          width: '100%', maxWidth: 620, margin: '0 auto',
-          background: 'var(--bg-card)', backdropFilter: 'blur(24px)',
-          border: '1px solid var(--border-glass)', borderBottom: 'none',
-          borderRadius: 'var(--radius-lg) var(--radius-lg) 0 0',
-          overflow: 'hidden', maxHeight: '85vh',
+          width: '100%', maxWidth: 580, margin: '0 auto',
+          background: 'var(--bg-card, rgba(10, 20, 55, 0.94))',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          border: '1px solid var(--border-glass)',
+          borderRadius: 'var(--radius-xl, 24px)',
+          boxShadow: '0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06)',
+          overflow: 'hidden', maxHeight: 'min(88vh, 740px)',
           display: 'flex', flexDirection: 'column',
         }}
       >
@@ -617,7 +621,7 @@ function FeedbackPanel({ rec, onClose }: { rec: Recurso; onClose: () => void }) 
         </div>
 
         {/* Scrollable body */}
-        <div style={{ overflowY: 'auto', flex: 1, padding: '20px 22px' }}>
+        <div className="modal-scrollbar" style={{ overflowY: 'auto', flex: 1, padding: '20px 22px' }}>
           <AnimatePresence mode="wait">
             {enviado ? (
               /* ── Success state ── */
