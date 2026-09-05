@@ -236,17 +236,27 @@ const DIF_TO_NIVEL_API: Record<number, NivelComplejidad> = {
   1: 'basico', 2: 'intermedio', 3: 'avanzado',
 };
 
-function mapRecursoAPI(r: RecursoAPI): Recurso {
+function mapRecursoAPI(r: any): Recurso {
+  const tipoRaw = String(r.tipo_formato || r.tipo || 'documento').toLowerCase();
+  const tipo: TipoRecurso = TIPO_API_TO_UI[tipoRaw as TipoFormato] || 'documento';
+  const varkRaw = String(r.categoria_vark || r.vark || 'V').toUpperCase() as EstiloVark;
+  const vark: EstiloVark = (['V', 'A', 'R', 'K'].includes(varkRaw)) ? varkRaw : 'V';
+  const estado: EstadoRec = r.activo !== false ? 'Aprobado' : 'Rechazado';
+  const difRaw = r.nivel_complejidad || r.dificultad;
+  const dificultad: 1 | 2 | 3 = (typeof difRaw === 'number' && (difRaw === 1 || difRaw === 2 || difRaw === 3))
+    ? (difRaw as 1 | 2 | 3)
+    : (NIVEL_API_TO_DIF[difRaw as NivelComplejidad] || 1);
+
   return {
-    id: String(r.id),
-    titulo: r.titulo,
-    url: r.url ?? '',
-    descripcion: r.descripcion ?? '',
-    tema: String(r.tema),
-    tipo: TIPO_API_TO_UI[r.tipo_formato] ?? 'documento',
-    vark: r.categoria_vark,
-    dificultad: NIVEL_API_TO_DIF[r.nivel_complejidad] ?? 1,
-    estado: r.activo ? 'Aprobado' : 'Rechazado',
+    id: String(r.id || Math.random()),
+    titulo: String(r.titulo || 'Sin título'),
+    url: String(r.url || ''),
+    descripcion: String(r.descripcion || ''),
+    tema: r.tema_nombre ? String(r.tema_nombre) : (r.tema ? String(r.tema) : ''),
+    tipo,
+    vark,
+    dificultad,
+    estado,
   };
 }
 
@@ -281,8 +291,8 @@ const containerVariants = {
 };
 
 const cardVariants = {
-  hidden:  { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.32, ease: [0.4, 0, 0.2, 1] as [number,number,number,number] } },
+  hidden:  { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.28 } },
 };
 
 // ─── Empty state ──────────────────────────────────────────────────────────────
@@ -424,12 +434,18 @@ export default function RecursosPage() {
     listarTemas()
       .then((temas) => {
         if (mounted && temas.length) {
-          setTemaOpts(temas.map((t) => ({ value: String(t.id), label: t.nombre })));
+          const validTemas = temas.filter((t: any) => t && t.id && t.nombre);
+          if (validTemas.length) setTemaOpts(validTemas.map((t: any) => ({ value: t.nombre, label: t.nombre })));
         }
       })
       .catch(() => {});
     listarRecursos()
-      .then((data) => { if (mounted) setRecursos(data.map(mapRecursoAPI)); })
+      .then((data) => {
+        if (mounted) {
+          const list = Array.isArray(data) ? data : ((data as any)?.results || []);
+          if (list.length > 0) setRecursos(list.map(mapRecursoAPI));
+        }
+      })
       .catch(() => {});
     return () => { mounted = false; };
   }, []);
@@ -859,7 +875,10 @@ interface CardProps {
 
 function RecursoCard({ recurso: r, temaLabel, hovered, onHover, onLeave, onEdit, onDelete, readOnly = false }: CardProps) {
   const { user } = useAuth();
-  const ytThumb = r.tipo === 'video' ? getYoutubeThumbnail(r.url) : null;
+  const [imgError, setImgError] = useState(false);
+  const ytThumb = (!imgError && (r.tipo === 'video' || (r.url && (r.url.includes('youtube.com') || r.url.includes('youtu.be')))))
+    ? getYoutubeThumbnail(r.url)
+    : null;
 
   const handleOpenRecurso = () => {
     if (user?.rol === 'estudiante' && r.id) {
@@ -868,22 +887,30 @@ function RecursoCard({ recurso: r, temaLabel, hovered, onHover, onLeave, onEdit,
     window.open(r.url, '_blank', 'noopener,noreferrer');
   };
 
+  const tipoColor = TIPO_COLOR[r.tipo] || 'var(--accent-blue)';
+  const tipoIcon = TIPO_ICON[r.tipo] || <FileText size={18} />;
+  const varkBadge = VARK_BADGE[r.vark] || 'vark-v';
+  const varkLabel = VARK_LABEL[r.vark] || r.vark;
+  const estadoBadge = ESTADO_BADGE[r.estado] || 'success';
+
   return (
     <motion.div
+      layout
       variants={cardVariants}
-      onMouseEnter={onHover}
-      onMouseLeave={onLeave}
-      animate={hovered
-        ? { scale: 1.025, boxShadow: '0 0 24px rgba(59,110,248,0.22)' }
-        : { scale: 1,     boxShadow: 'none' }
-      }
-      transition={{ duration: 0.22 }}
-      className="glass-card"
-      style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+      whileHover={{ y: -4, scale: 1.015, boxShadow: 'var(--shadow-card), 0 0 24px rgba(59,110,248,0.18)' }}
+      style={{
+        borderRadius: 'var(--radius-lg)',
+        border: '1px solid var(--border-glass)',
+        background: 'var(--bg-card)',
+        backdropFilter: 'blur(20px)',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        transition: 'border-color 0.2s, box-shadow 0.2s',
+      }}
     >
       {/* Thumbnail / tipo header */}
       <div
-        onClick={handleOpenRecurso}
         style={{
           height: ytThumb ? 130 : 68,
           background: ytThumb
@@ -892,7 +919,6 @@ function RecursoCard({ recurso: r, temaLabel, hovered, onHover, onLeave, onEdit,
           borderBottom: '1px solid var(--border-glass)',
           position: 'relative',
           flexShrink: 0,
-          cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}
       >
@@ -901,6 +927,7 @@ function RecursoCard({ recurso: r, temaLabel, hovered, onHover, onLeave, onEdit,
           <img
             src={ytThumb}
             alt=""
+            onError={() => setImgError(true)}
             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
           />
         ) : (
@@ -940,13 +967,11 @@ function RecursoCard({ recurso: r, temaLabel, hovered, onHover, onLeave, onEdit,
 
         {/* Title */}
         <h3
-          onClick={handleOpenRecurso}
           style={{
             fontFamily: 'var(--font-syne), Syne, sans-serif',
             fontWeight: 700, fontSize: '0.92rem',
             color: 'var(--text-primary)', margin: 0,
             lineHeight: 1.35,
-            cursor: 'pointer',
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
