@@ -348,7 +348,10 @@ export default function HistorialPage() {
     return () => { mounted = false; };
   }, []);
 
-  const data = useMemo(() => apiData ?? DATA_BY_RANGE[range], [apiData, range]);
+  const data = useMemo(() => {
+    if (!apiData || apiData.length === 0) return DATA_BY_RANGE[range];
+    return apiData;
+  }, [apiData, range]);
   const timeline = apiTimeline ?? TIMELINE_EVENTS;
 
   const handleRangeChange = (key: RangeKey) => {

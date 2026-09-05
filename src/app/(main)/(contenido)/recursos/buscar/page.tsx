@@ -1,5 +1,7 @@
 'use client';
 
+import { useAuth } from '@/lib/auth/AuthContext';
+
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {

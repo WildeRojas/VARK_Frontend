@@ -83,3 +83,24 @@ export function actualizarConfiguracionMotor(
 export function estadoML(): Promise<MLEstado> {
   return apiRequest<MLEstado>('/recomendacion/ml/estado/');
 }
+
+export interface ClickstreamMonitorData {
+  kpis: {
+    eventos_hoy: number;
+    usuarios_activos: number;
+    recursos_vistos: number;
+    total_eventos: number;
+  };
+  eventos: Array<{
+    id: number;
+    user: string;
+    recurso: string;
+    recurso_id?: number | null;
+    tipo_evento: string;
+    timestamp: string;
+  }>;
+}
+
+export function listarEventosClickstream(): Promise<ClickstreamMonitorData> {
+  return apiRequest<ClickstreamMonitorData>('/recomendacion/clickstream/');
+}

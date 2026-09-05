@@ -34,7 +34,7 @@ const variantStyles: Record<BadgeVariant, { color: string; bg: string; border: s
 };
 
 export default function Badge({ children, variant = 'default', size = 'sm' }: BadgeProps) {
-  const s = variantStyles[variant];
+  const s = variantStyles[variant] || variantStyles.default;
   return (
     <span
       style={{

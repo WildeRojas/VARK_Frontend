@@ -105,8 +105,8 @@ function NavItemComponent({
               ? 'rgba(59,110,248,0.15)'
               : hovered
                 ? 'var(--bg-glass-hover, rgba(255,255,255,0.06))'
-                : 'transparent',
-            border: `1px solid ${active ? 'rgba(59,110,248,0.35)' : 'transparent'}`,
+                : 'rgba(59,110,248,0)',
+            border: `1px solid ${active ? 'rgba(59,110,248,0.35)' : 'rgba(0,0,0,0)'}`,
             boxShadow: active ? '0 0 14px rgba(59,110,248,0.16)' : 'none',
             cursor: 'pointer',
             transition: 'background 0.15s, border-color 0.15s, box-shadow 0.15s',

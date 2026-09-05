@@ -178,11 +178,23 @@ export interface EstudianteBajoEngagement {
   nombre: string;
 }
 
+export interface EstudianteProgresoItem {
+  id: number;
+  nombre: string;
+  email: string;
+  quizzes: number;
+  recursos: number;
+  dominante: 'V' | 'A' | 'R' | 'K';
+  profile: { v: number; a: number; r: number; k: number };
+  ultima_actividad: string;
+}
+
 export interface ReporteDocente {
   total_estudiantes: number;
   promedio_puntaje_quizzes: number;
   recursos_mas_efectivos: RecursoEfectivo[];
   estudiantes_bajo_engagement: EstudianteBajoEngagement[];
+  estudiantes_progreso?: EstudianteProgresoItem[];
   distribucion_vark: { V: number; A: number; R: number; K: number };
 }
 
@@ -593,6 +605,7 @@ export interface DashboardAdmin {
   distribucion_vark: { V: number; A: number; R: number; K: number };
   recursos_mas_efectivos: RecursoEfectivo[];
   estudiantes_bajo_engagement: EstudianteBajoEngagement[];
+  estudiantes_progreso?: EstudianteProgresoItem[];
   tasa_aceptacion_ia: number | null;
 }
 

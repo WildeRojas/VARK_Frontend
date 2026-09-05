@@ -19,7 +19,7 @@ import Modal    from '@/components/ui/Modal';
 import Select   from '@/components/ui/Select';
 import RadarChart from '@/components/ui/RadarChart';
 import { reporteDocente, exportarReporte } from '@/lib/api/analitica';
-import type { ReporteDocente, RecursoEfectivo, EstudianteBajoEngagement, ExportReporteParams } from '@/lib/api/types';
+import type { ReporteDocente, RecursoEfectivo, EstudianteBajoEngagement, EstudianteProgresoItem, ExportReporteParams } from '@/lib/api/types';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -68,6 +68,21 @@ const MOCK_RECURSOS: RecursoTop[] = [
 ];
 
 // ─── API → UI helpers ────────────────────────────────────────────────────────
+
+function toEstudianteFromProgreso(e: EstudianteProgresoItem): Estudiante {
+  const parts = e.nombre.trim().split(' ');
+  const avatar = parts.map((p) => p[0] ?? '').join('').slice(0, 2).toUpperCase() || 'U';
+  return {
+    id: String(e.id),
+    nombre: e.nombre,
+    avatar,
+    dominante: e.dominante || 'V',
+    profile: e.profile || { v: 25, a: 25, r: 25, k: 25 },
+    quizzes: e.quizzes,
+    recursos: e.recursos,
+    ultimaActividad: e.ultima_actividad,
+  };
+}
 
 function toEstudiante(e: EstudianteBajoEngagement): Estudiante {
   const parts   = e.nombre.trim().split(' ');
@@ -580,7 +595,7 @@ export default function ReportesPage() {
   }, []);
 
   const students = useMemo(
-    () => reporte?.estudiantes_bajo_engagement.map(toEstudiante) ?? MOCK_ESTUDIANTES,
+    () => reporte?.estudiantes_progreso?.map(toEstudianteFromProgreso) ?? reporte?.estudiantes_bajo_engagement.map(toEstudiante) ?? MOCK_ESTUDIANTES,
     [reporte],
   );
   const recursos = useMemo(
